@@ -1,4 +1,4 @@
-## Opsly Social Network Consolidator
+## Opsly Test and Spring Boot demo
 
 The output from curl only shows the word 'test' currently. To see
 the output so far you need to run from within the IDEA.
