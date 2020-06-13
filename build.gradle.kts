@@ -8,6 +8,7 @@ plugins {
     kotlin("plugin.jpa") version "1.3.72"
     kotlin("plugin.allopen") version "1.3.61"
     kotlin("kapt") version "1.3.61"
+//    kotlin("ktor") version "1.3.2"
 }
 
 group = "com.opsly"
@@ -30,6 +31,10 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:3.14.9")
     implementation("org.slf4j:slf4j-api")
     implementation("ch.qos.logback:logback-classic:1.2.3")
+
+    //core
+    implementation ("com.github.kittinunf.fuel:fuel:2.2.3")
+//    implementation ("com.github.kittinunf.fuel:<package>:<latest-version>")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -65,4 +70,10 @@ allOpen {
     annotation("javax.persistence.Entity")
     annotation("javax.persistence.Embeddable")
     annotation("javax.persistence.MappedSuperclass")
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+    google()
 }

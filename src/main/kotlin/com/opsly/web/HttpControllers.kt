@@ -1,16 +1,20 @@
 package com.opsly.web
 
-import org.springframework.http.HttpStatus.*
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.server.ResponseStatusException
 
 @RestController
 class HttpControllers {
 
 	@GetMapping("/")
 	@ResponseBody
-	fun root (): String = MainWorker.run()
+	fun root (): String = Jason.main()
+//	fun root (): String = Main.run()
+//	fun root (): String = MainWorker.run()
 }
+
+//
+// *******  Below code is for testing non related Kotlin features and can be ignored.
+//
 //
 //@RestController
 //@RequestMapping("/api/article")

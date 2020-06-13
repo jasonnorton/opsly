@@ -5,76 +5,95 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.*
+import kotlin.system.*
 
 class MainWorker {
     companion object {
 
         private val client = OkHttpClient().newBuilder()
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(5, TimeUnit.SECONDS)
                 .callTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(5, TimeUnit.SECONDS)
+                .connectTimeout(5, TimeUnit.SECONDS)
                 .build()
 
         private fun log(): Logger = LoggerFactory.getLogger("MainWorker")
 
         fun run(): String {
 
-            val facebookrequest = Request.Builder()
-                    .url("https://takehome.io/facebook")
-                    .build()
+            var output: String = ""
 
-            val twitterrequest = Request.Builder()
-                    .url("https://takehome.io/twitter")
-                    .build()
+            val urls = listOf(
+                    "https://takehome.io/facebook",
+                    "https://takehome.io/twitter",
+                    "https://takehome.io/instagram")
 
-            val instagramrequest = Request.Builder()
-                    .url("https://takehome.io/instagram")
-                    .build()
+            for (url in urls) {
+                val urlrequest = Request.Builder()
+                        .url(url)
+                            .build()
 
-            client.newCall(facebookrequest).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    e.printStackTrace()
-                }
-                override fun onResponse(call: Call, fbresponse: Response) {
-                    fbresponse.use {
-                        if (!fbresponse.isSuccessful) throw IOException("Unexpected code $fbresponse")
+                var count = 0
+                var urlstatus = false
+//                output = ""
 
-                        println(fbresponse.body()!!.string())
-                        log().info("**** FACEBOOK ************")
+//                while (count < 3 && !urlstatus) {
+//                    println("Count is $count")
+//                    println("urlstatus is $urlstatus")
+//
+//                    client.newCall(urlrequest).enqueue(object : Callback {
+//                        override fun onFailure(call: Call, e: IOException) {
+//                            e.printStackTrace()
+//                        }
+//
+//                        override fun onResponse(call: Call, urlresponse: Response) {
+//                            urlresponse.use {
+//                                if (!urlresponse.isSuccessful) {
+//                                    throw IOException("Unexpected code $urlresponse")
+//                                } else {
+//                                    println("In the else section")
+//                                    println("Status was $urlstatus")
+//
+//                                    urlstatus = true
+//                                    println("Status in now $urlstatus")
+//                                    println(urlresponse.body()!!.string())
+//                                    log().info("**** $url ************")
+////                                    output = output + urlresponse.body()!!.string()
+////                                    println("OUTPUT String is $output ")
+//                                }
+//
+////                                println(urlresponse.body()!!.string())
+////                                log().info("**** $url ************")
+//                            }
+//                        }
+//                    })
+//
+//                    count++
+//                }
+
+                client.newCall(urlrequest).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        e.printStackTrace()
                     }
-                }
-            })
 
-            client.newCall(twitterrequest).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    e.printStackTrace()
-                }
-                override fun onResponse(call: Call, twresponse: Response) {
-                    twresponse.use {
-                        if (!twresponse.isSuccessful) throw IOException("Unexpected code $twresponse")
+                    override fun onResponse(call: Call, urlresponse: Response) {
+                        urlresponse.use {
+                            if (!urlresponse.isSuccessful) throw IOException("Unexpected code $urlresponse")
 
-                        println(twresponse.body()!!.string())
-                        log().info("**** TWITTER ************")
+                            var responsestring = urlresponse.body()!!.string()
+                            println(responsestring)
+                            output += responsestring
+                            println("Output string is $output")
+                        }
                     }
-                }
-            })
+                })
 
-            client.newCall(instagramrequest).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    e.printStackTrace()
-                }
-                override fun onResponse(call: Call, inresponse: Response) {
-                    inresponse.use {
-                        if (!inresponse.isSuccessful) throw IOException("Unexpected code $inresponse")
+                println("URL is $url")
+            }
 
-                        println(inresponse.body()!!.string())
-                        log().info("**** INSTAGRAM ************")
-                    }
-                }
-            })
-
-            return "test"
+            println("End of program - Output is $output")
+            return output
 
         }
     }
