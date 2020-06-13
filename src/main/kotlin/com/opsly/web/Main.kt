@@ -11,7 +11,7 @@ class Main {
 
     companion object {
 
-        internal val client = OkHttpClient().newBuilder()
+        private val client = OkHttpClient().newBuilder()
                 .readTimeout(5, TimeUnit.SECONDS)
                 .callTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(5, TimeUnit.SECONDS)
@@ -29,43 +29,29 @@ class Main {
                     "https://takehome.io/twitter",
                     "https://takehome.io/instagram")
 
+            var count = 0
             for (url in urls) {
+                println("URL is $url")
+                count = count +1
                 val urlrequest = Request.Builder()
                         .url(url)
                         .build()
 
-                var count = 0
-                var urlstatus = false
-//                output = ""
-
                 val responseone  = async {
-                    val aaaa = ""
-                    doSomethingUsefulOne(urlrequest, aaaa)
+                    doSomethingUsefulOne(urlrequest)
                 }
 
 //                println("The answer is ${responseone.await() + two.await() + three.await()}")
 
-                println("URL is $url")
             }
 
-            println("End of program - Output is $output").toString()
-//            delay(1000L)
-
+            return@runBlocking "bob"
+//            println("End of program - Output is '$output'").toString()
 //            return output
 
         }
 
-//        fun xxxx(urlrequest: Request) = runBlocking<Unit> {
-//            val time = measureTimeMillis {
-//                val one = async { doSomethingUsefulOne() }
-//                val two = async { doSomethingUsefulTwo() }
-//                val three = async { doSomethingUsefulThree() }
-//                println("The answer is ${one.await() + two.await() + three.await()}")
-//            }
-//            println("Completed in $time ms")
-//        }
-
-        suspend fun doSomethingUsefulOne(urlrequest: Request, responsestring: String): String {
+        suspend fun doSomethingUsefulOne(urlrequest: Request): String {
 
             client.newCall(urlrequest).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
@@ -83,20 +69,20 @@ class Main {
                     }
                 }
             })
-            return responsestring
+            return "test"
 //            return 13
         }
 
-        suspend fun doSomethingUsefulTwo(): Int {
+        suspend fun doSomethingUsefulTwo(): String {
             delay(1000L) // pretend we are doing something useful here, too
-            return 29
+            return "Two"
         }
-
-        suspend fun doSomethingUsefulThree(): Int {
-            delay(1000L) // pretend we are doing something useful here, too
-            return 29
-        }
-
-
+//
+//        suspend fun doSomethingUsefulThree(): Int {
+//            delay(1000L) // pretend we are doing something useful here, too
+//            return 29
+//        }
+//
+//
     }
 }

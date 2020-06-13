@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.*
-import kotlin.system.*
 
-class MainWorker {
+class MainWoker {
+
     companion object {
 
         private val client = OkHttpClient().newBuilder()
@@ -20,81 +20,70 @@ class MainWorker {
 
         private fun log(): Logger = LoggerFactory.getLogger("MainWorker")
 
-        fun run(): String {
+        fun run(): String = runBlocking<String> {
 
             var output: String = ""
 
-            val urls = listOf(
-                    "https://takehome.io/facebook",
-                    "https://takehome.io/twitter",
-                    "https://takehome.io/instagram")
+            val facebookurl = Request.Builder()
+                    .url("https://takehome.io/facebook")
+                    .build()
 
-            for (url in urls) {
-                val urlrequest = Request.Builder()
-                        .url(url)
-                            .build()
+            val twitterurl = Request.Builder()
+                    .url("https://takehome.io/twitter")
+                    .build()
 
-                var count = 0
-                var urlstatus = false
-//                output = ""
+            val instagramurl = Request.Builder()
+                    .url("https://takehome.io/instagram")
+                    .build()
 
-//                while (count < 3 && !urlstatus) {
-//                    println("Count is $count")
-//                    println("urlstatus is $urlstatus")
-//
-//                    client.newCall(urlrequest).enqueue(object : Callback {
-//                        override fun onFailure(call: Call, e: IOException) {
-//                            e.printStackTrace()
-//                        }
-//
-//                        override fun onResponse(call: Call, urlresponse: Response) {
-//                            urlresponse.use {
-//                                if (!urlresponse.isSuccessful) {
-//                                    throw IOException("Unexpected code $urlresponse")
-//                                } else {
-//                                    println("In the else section")
-//                                    println("Status was $urlstatus")
-//
-//                                    urlstatus = true
-//                                    println("Status in now $urlstatus")
-//                                    println(urlresponse.body()!!.string())
-//                                    log().info("**** $url ************")
-////                                    output = output + urlresponse.body()!!.string()
-////                                    println("OUTPUT String is $output ")
-//                                }
-//
-////                                println(urlresponse.body()!!.string())
-////                                log().info("**** $url ************")
-//                            }
-//                        }
-//                    })
-//
-//                    count++
-//                }
+            var count = 0
 
-                client.newCall(urlrequest).enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {
-                        e.printStackTrace()
-                    }
 
-                    override fun onResponse(call: Call, urlresponse: Response) {
-                        urlresponse.use {
-                            if (!urlresponse.isSuccessful) throw IOException("Unexpected code $urlresponse")
-
-                            var responsestring = urlresponse.body()!!.string()
-                            println(responsestring)
-                            output += responsestring
-                            println("Output string is $output")
-                        }
-                    }
-                })
-
-                println("URL is $url")
+            val facebookresponseone  = async {
+                doSomethingUsefulOne(facebookurl)
             }
 
-            println("End of program - Output is $output")
-            return output
+            val twitterresponseone  = async {
+                doSomethingUsefulOne(twitterurl)
+            }
+
+            val instagramresponseone  = async {
+                doSomethingUsefulOne(instagramurl)
+            }
+
+            println("All calls have responded ${facebookresponseone.await() +
+                    twitterresponseone.await() +
+                    instagramresponseone.await()}")
+
+            return@runBlocking "$facebookresponseone" +
+                    "$twitterresponseone" +
+                    "$instagramresponseone"
+
+//            println("End of program - Output is '$output'").toString()
+//            return output
 
         }
+
+        suspend fun doSomethingUsefulOne(urlrequest: Request): String {
+
+            var xxx = ""
+            client.newCall(urlrequest).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    e.printStackTrace()
+                }
+
+                override fun onResponse(call: Call, urlresponse: Response) {
+                    urlresponse.use {
+                        if (!urlresponse.isSuccessful) throw IOException("Unexpected code $urlresponse")
+
+                        var responsestring = urlresponse.body()!!.string()
+                        println("URl response string is - $responsestring")
+                        xxx = responsestring
+                    }
+                }
+            })
+            return xxx
+        }
+
     }
 }

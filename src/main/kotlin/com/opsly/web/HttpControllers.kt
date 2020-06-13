@@ -7,9 +7,9 @@ class HttpControllers {
 
 	@GetMapping("/")
 	@ResponseBody
-	fun root (): String = Jason.main()
+//	fun root (): String = Jason.main()
 //	fun root (): String = Main.run()
-//	fun root (): String = MainWorker.run()
+	fun root (): String = MainWoker.run()
 }
 
 //
