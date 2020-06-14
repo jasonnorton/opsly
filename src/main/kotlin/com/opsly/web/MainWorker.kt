@@ -58,15 +58,12 @@ class MainWoker {
             return@runBlocking "$facebookresponseone" +
                     "$twitterresponseone" +
                     "$instagramresponseone"
-
-//            println("End of program - Output is '$output'").toString()
-//            return output
-
         }
 
         suspend fun doSomethingUsefulOne(urlrequest: Request): String {
 
-            var xxx = ""
+            var responsestring = ""
+
             client.newCall(urlrequest).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     e.printStackTrace()
@@ -76,13 +73,12 @@ class MainWoker {
                     urlresponse.use {
                         if (!urlresponse.isSuccessful) throw IOException("Unexpected code $urlresponse")
 
-                        var responsestring = urlresponse.body()!!.string()
-                        println("URl response string is - $responsestring")
-                        xxx = responsestring
+                        responsestring = urlresponse.body()!!.string()
+                        println("${urlrequest.url()} response string is - $responsestring")
                     }
                 }
             })
-            return xxx
+            return responsestring
         }
 
     }
