@@ -55,8 +55,8 @@ class MainWoker {
                     twitterresponseone.await() +
                     instagramresponseone.await()}")
 
-            return@runBlocking "$facebookresponseone" +
-                    "$twitterresponseone" +
+            return@runBlocking facebookresponseone.await() +
+                    twitterresponseone.toString() +
                     "$instagramresponseone"
         }
 
@@ -78,6 +78,7 @@ class MainWoker {
                     }
                 }
             })
+//            return "try this"
             return responsestring
         }
 
